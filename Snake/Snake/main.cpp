@@ -22,7 +22,7 @@ int main() {
 	while (g1.play()) {
 		g1.Move();
 	}
-
+	//snake
 
 
 	g1.ending();
