@@ -8,6 +8,7 @@ public:
 	void draw();
 	void ending();
 	bool play();
+	void settings();
 };
 
 

@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "board.h"
 #include "fruit.h"
 #include "snake.h"
@@ -8,89 +8,118 @@
 #include <Windows.h>
 
 Snake::Snake(Board& x) : Fruit(x) {
-	head_x = 0;
-	head_y = 0;
-	move_x = 0;
-	move_y = 0;
-	moving_Dir = 0;
+	head = 0;	// position in snakes body of his head (0 means that it is his first element - of his body)
+	dir_x = 0;	// direction change in x axis
+	dir_y = 0;	// direction change in y axis
+	base_length = 12;	// setting value - starting length of snake		
+	prev_tailPos[0] = 0;	// prev tail position coord
+	prev_tailPos[1] = 0;	// prev tail position coord
+	tail = base_length + score;	// actual in game lenghth of snake ( + score, because he is growing while eating fruits)
+	//int inGamebodyLength = base_length + score; // ciał węża w trakcie gry to suma bazowej długośći węża i wyniku (ilości zjedzonych owoców)
 }
 
+//-------------------------------
+// make a snake with his body
 void Snake::born() {
+
+	// randomly put head of snake on board (also checking if it is not inside fruit)
 	do {
-		head_x = 1 + rand() % (global_x - 1);
-		head_y = 1 + rand() % (global_y - 1);
-	} while ((head_x == fruit_x) && (head_y == fruit_y));
+		body[head].body_pos[0] = 1 + rand() % (global_x - 1);
+		body[head].body_pos[1] = 1 + rand() % (global_y - 1);
+	} while ((body[head].body_pos[0] == fruit_x) && (body[head].body_pos[1] == fruit_y));
 
-	GoTo(head_x, head_y);
-	std::cout << "X";
-	move_x = head_x;
-	move_y = head_y;
+	// is it beeing used? check the queue problem algorithm in Stephen Prata c++ book
+	for (int i = tail-1; i > 0; i--) {
+		body[i].higherEl = &body[i-1];
+	}
+	// position of body of snake (for now inside head = he will be expanding during game)
+	for (int i = 1; i < tail; i++) {
+		body[i].body_pos[0] = body[head].body_pos[0];
+		body[i].body_pos[1] = body[head].body_pos[1];
+	}
+	// make body of snake in addiction to his coordinate (without head)
+	for (int i = tail-1; i > 0; i--) {
+		GoTo(body[i].body_pos[0], body[i].body_pos[1]);
+		std::cout << "X";
+	}
+	// making head of the snake
+	GoTo(body[head].body_pos[0], body[head].body_pos[1]);
+	std::cout << "+";
 }
 
-void Snake::moveUp(){
-	while (!_kbhit() && move_y != global_y+1) {
-		move_y++;
-		//moving_Dir = move_y;
-		GoTo(move_x, move_y);
-		std::cout << "X";
-		Sleep(200);
-	}
-}
-void Snake::moveDown(){
-	while (!_kbhit() && move_y != 0) {
-		move_y--;
-		//moving_Dir = -move_y;
-		GoTo(move_x, move_y);
-		std::cout << "X";
-		Sleep(200);
-	}
-}
-void Snake::moveRight() {
-	while (!_kbhit() && move_x != global_x-1) {
-		move_x++;
-		//moving_Dir = -move_x;
-		GoTo(move_x, move_y);
-		std::cout << "X";
-		Sleep(100);
-	}
-}
-void Snake::moveLeft() {
-	while (!_kbhit() && move_x != 0) {
-		move_x--;
-		//moving_Dir = move_x;
-		GoTo(move_x, move_y);
-		std::cout << "X";
-		Sleep(100);
-	}
-}
-void Snake::Move()
+//---------------------------------------------
+// move snake
+void Snake::move()
 {
-	if (_getch() == ARROW_KEY) {
-		switch (_getch()) {
-		case UP:
-			moveUp();
-			break;
-		case DOWN:
-			moveDown();
-			break;
-		case LEFT:
-			moveLeft();
-			break;
-		case RIGHT:
-			moveRight();
-			break;
+	// while keyboard key is hit save his change of position
+	// f.e. one pixel up (during that he is not moving left or right
+	// so change of position in this side is equal to zero
+	while (_kbhit()) {
+		if (_getch() == ARROW_KEY) {
+			switch (_getch()) {
+			case UP:	
+				dir_x = 0;
+				dir_y = 1;
+				time = 200;	// time is different because of different radio of char in x and y check if it is possible to make it equal
+				break;
+			case DOWN:	
+				dir_x = 0;
+				dir_y = -1;
+				time = 200;
+				break;
+			case LEFT:
+				dir_x = -1;
+				dir_y = 0;
+				time = 100;
+				break;
+			case RIGHT:
+				dir_x = 1;
+				dir_y = 0;
+				time = 100;
+				break;
+			}
 		}
 	}
+			// saving previous position of tail (last element of snakes body)
+			prev_tailPos[0] = body[tail - 1].body_pos[0];
+			prev_tailPos[1] = body[tail - 1].body_pos[1];
 
-	//GoTo(move_x, move_y);
-	//std::cout << "X";
+			// save position of every element of snakes body
+			for(int i = base_length-1; i > 0; i--){
+				body[i].body_pos[0] = body[i - 1].body_pos[0];
+				body[i].body_pos[1] = body[i - 1].body_pos[1];
+			}
+			
+			// save position of snakes head
+			body[head].body_pos[0] += dir_x;	//head
+			body[head].body_pos[1] += dir_y;	//head
 
-	/*
-	while (!_kbhit()) {
-		moving_Dir++;
-		GoTo(move_x, move_y);
-		std::cout << "X";
-		Sleep(500);
+			// start drawing snake (with erasing his last position of tail)
+			GoTo(prev_tailPos[0], prev_tailPos[1]);
+			std::cout << " ";
+			for (int i = (tail - 1); i > 0; i--) 
+			{
+				GoTo(body[i].body_pos[0], body[i].body_pos[1]);
+				std::cout << "X";
+			}
+			GoTo(body[head].body_pos[0], body[head].body_pos[1]);
+			std::cout << "+";
+			Sleep(time);
+}
+
+bool Snake::snake_collision()
+{
+	for (int i = head+1; i < tail; i++) {
+		if ((body[tail - 2].body_pos[0] != body[tail - 1].body_pos[0]) || (body[tail - 2].body_pos[1] != body[tail - 1].body_pos[1])) {
+			if ((body[0].body_pos[0] == body[i].body_pos[0]) && (body[0].body_pos[1] == body[i].body_pos[1])) return true;
+		}
 	}
-	*/
+	return false;
+}
+
+void Snake::snakeEat() {
+	if (body[0].body_pos[0] == fruit_x && body[0].body_pos[1] == (fruit_y+1)) {
+		score++;
+		while(body[0].body_pos[0] == fruit_x && body[0].body_pos[1] == fruit_y) Fruit::generate_rand();
+	}
 }

@@ -10,20 +10,27 @@ static const int ARROW_KEY = 224;
 class 
 	Snake : public Fruit {
 private:
-	int head_x, head_y;
+	int head;
+	short dir_x; //-1 (left or down) / +1 (right or up)
+	short dir_y;
 	friend class Game;
-	int move_x, move_y;
-	int moving_Dir;
+	int base_length;
+	const int length = Board::global_x*Board::global_y;
+	struct Body {
+		int body_pos[2];
+		Body* higherEl; // point element nearer head element
+	};
+	Body* body = new Body[length];
+	int prev_tailPos[2];
+	int score = 0;
+	int tail;;
+	int time = 0;
 public:
 	Snake(Board&);
 	void born();
-	void Move();
-	// przeciążyć jakoś te funkcje?
-	void moveUp();
-	void moveDown();
-	void moveRight();
-	void moveLeft();
-	////////////////////////////////
+	void move();
+	bool snake_collision();
+	void snakeEat();
 };
 
 #endif

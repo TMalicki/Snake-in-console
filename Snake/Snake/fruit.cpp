@@ -5,13 +5,16 @@
 #include <stdlib.h>
 
 Fruit::Fruit(Board& x) : Board(x) {
+	srand(time(NULL));
 	fruit_x = 0;
 	fruit_y = 0;
 }
 
+// randomly generate fruit inside board game
 void Fruit::generate_rand() {
-	srand(time(NULL));
-
 	fruit_x = 1 + rand() % (global_x-1);
 	fruit_y = 1 + rand() % (global_y-1);
+
+	//GoTo(fruit_x, fruit_y);
+	//std::cout << "@";
 }
