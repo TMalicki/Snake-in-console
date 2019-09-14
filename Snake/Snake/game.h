@@ -9,6 +9,7 @@ public:
 	void ending();
 	bool play();
 	void settings();
+	void menu();
 };
 
 

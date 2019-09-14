@@ -22,7 +22,6 @@ private:
 	};
 	Body* body = new Body[length];
 	int prev_tailPos[2];
-	int score = 0;
 	int tail;;
 	int time = 0;
 public:

@@ -16,11 +16,15 @@ int main() {
 	Game g2(b1);
 	Game g3(s1);
 
+	//g1.menu();
+	
 	g1.settings();
 
-	g1.generate_rand(); // randomly generate fruit
+	//g1.generate_rand(); // randomly generate fruit
 	g1.draw();	// board game
 	g1.born();	// randomly generate snake
+	g1.Score();
+
 	while (g1.play()) {
 		g1.move();
 		g1.snakeEat();

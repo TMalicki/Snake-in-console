@@ -5,8 +5,10 @@
 Board::Board(int x, int y)
 {
 	if (x > 0 && y > 0) {
-		global_x = x;
-		global_y = y;
+		global_x_min = 17;
+		global_y_min = 3;
+		global_x = x+17;
+		global_y = y+3;	
 	}
 	else {
 		std::cerr << "\nError, board is too small.\n";
@@ -22,4 +24,9 @@ void Board::GoTo(short x, short y) {
 
 	COORD coord = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void Board::Score() {
+	GoTo(global_x_min, global_y + 2);
+	std::cout << "Punkty:" << score;
 }

@@ -3,6 +3,7 @@
 class Fruit : public Board {
 private:
 	int fruit_x, fruit_y;
+	int pfruit_x, pfruit_y;
 	friend class Snake;
 	friend class Game;
 public:

@@ -14,27 +14,28 @@ void Game::draw() {
 		using std::cout;
 		using std::endl;
 
-		for (int i = 0; i < global_x; i++) {
+		for (int i = global_x_min; i <= global_x; i++) {
+			GoTo(i, global_y_min);
 			cout << "#";
 		}
 		cout << endl;
-		for (int y = 0; y < global_y; y++) {
+
+		for (int y = global_y_min+1; y < global_y; y++) {
+			GoTo(global_x_min, y);
 			cout << "#";
-			for (int x = 1; x < global_x - 1; x++) {
-				if ((x == fruit_x) && (y == fruit_y)) cout << "O";
-				else cout << " ";
-			}
-			cout << "#";
-			cout << endl;
-		}
-		for (int i = 0; i < global_x; i++) {
+			GoTo(global_x, y);
 			cout << "#";
 		}
-		//Fruit::generate_rand();
+
+		for (int i = global_x_min; i <= global_x; i++) {
+			GoTo(i, global_y);
+			cout << "#";
+		}
+		Fruit::generate_rand();
 }
 
 bool Game::play() {
-	if (body[0].body_pos[0] == 0 || body[0].body_pos[0] == global_x - 1 || body[0].body_pos[1] == 0 || body[0].body_pos[1] == global_y + 1) gameover = 0;
+	if (body[0].body_pos[0] == global_x_min || body[0].body_pos[0] == global_x || body[0].body_pos[1] == global_y_min || body[0].body_pos[1] == global_y) gameover = 0;
 	else if (Snake::snake_collision()) gameover = 0;
 	
 	return gameover;
@@ -44,6 +45,31 @@ void Game::ending() {
 	GoTo(global_x/2, global_y/2);
 	std::cout << "GAMEOVER\n";
 	_getch();
+}
+
+void Game::menu() {
+	int choose = 0;
+
+		GoTo((global_x - global_x_min) / 2, (global_y - global_y_min) / 2);
+		std::cout << "MENU:";
+		GoTo((global_x - global_x_min) / 2, ((global_y - global_y_min) / 2) + 1);
+		std::cout << "Play";
+		GoTo((global_x - global_x_min) / 2, ((global_y - global_y_min) / 2) + 2);
+		std::cout << "Settings";
+
+	choose = _getch();
+	switch (choose) {
+		case 1: {
+			system("cls");
+			gameover = 1;
+		}
+			break;
+		case 2: 
+			break;
+		default: {
+
+		}
+	}
 }
 
 void Game::settings() {
