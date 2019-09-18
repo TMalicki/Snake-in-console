@@ -5,31 +5,40 @@
 #include "game.h"
 #include <Windows.h>
 
-int main() {
+// BUGI : 
+// - czasami znak ciala weza (ktory nie nalezy do weza - nie przesuwa sie) pojawia sie gdzies losowo na planszy
 
-	Board b1(50, 20);
-	//b1.draw();
-	Fruit f1(b1);
-	Snake s1(f1);
+/// MODERNIZACJA
+/// - poprawic funkcje void Snake::snakeEat() - mozna dodac losowanie bez powtorzen - to przez ta metode
+/// - poprawic to co w funkcji bool Game::play() jest
+/// - do funkcji ending zaimplementowac funkcje navigate. plus moze jakos tamta metode zrobic bardziej uniwersalna?
 
-	Game g1(f1);
-	Game g2(b1);
-	Game g3(s1);
 
-	//g1.menu();
-	
-	g1.settings();
+int main() 
+{	
+		Board b1(30, 30);
+		//Fruit f1(b1);
+		//Game g1(f1);
+		//Game g1(b1);
+		Game g1(b1);
 
-	//g1.generate_rand(); // randomly generate fruit
-	g1.draw();	// board game
-	g1.born();	// randomly generate snake
-	g1.Score();
+		g1.settings();
+		if (!g1.start()) 
+		{
+			g1.menu();
+		}
 
-	while (g1.play()) {
-		g1.move();
-		g1.snakeEat();
-	}
-
-	g1.ending();
-	return 0;
+		if (g1.start()) 
+		{
+			g1.draw();	// board game
+			g1.born();	// randomly generate snake
+			g1.Score();
+		}
+		while (g1.play())
+		{
+			g1.move();
+			g1.snakeEat();
+		}
+		return 0;
 }
+

@@ -12,6 +12,11 @@ Fruit::Fruit(Board& x) : Board(x) {
 	pfruit_y = 0;
 }
 
+Fruit::~Fruit() {
+	std::cout << "Fruit zabite\n";
+}
+
+
 // randomly generate fruit inside board game
 void Fruit::generate_rand() {
 	fruit_x = (global_x_min + 1) + rand() % (global_x - (global_x_min + 1));

@@ -11,11 +11,15 @@ Snake::Snake(Board& x) : Fruit(x) {
 	head = 0;	// position in snakes body of his head (0 means that it is his first element - of his body)
 	dir_x = 0;	// direction change in x axis
 	dir_y = 0;	// direction change in y axis
-	base_length = 3;	// setting value - starting length of snake		
+	//base_length = 3;	// setting value - starting length of snake		
 	prev_tailPos[0] = 0;	// prev tail position coord
 	prev_tailPos[1] = 0;	// prev tail position coord
 	tail = base_length + score;	// actual in game lenghth of snake ( + score, because he is growing while eating fruits)
 	//int inGamebodyLength = base_length + score; // ciał węża w trakcie gry to suma bazowej długośći węża i wyniku (ilości zjedzonych owoców)
+}
+
+Snake::~Snake() {
+	std::cout << "Snake zabity.\n";
 }
 
 //-------------------------------
@@ -40,7 +44,7 @@ void Snake::born() {
 	// make body of snake in addiction to his coordinate (without head)
 	for (int i = base_length -1; i > 0; i--) {
 		GoTo(body[i].body_pos[0], body[i].body_pos[1]);
-		std::cout << "X";
+		std::cout << "+";
 	}
 	// making head of the snake
 	GoTo(body[head].body_pos[0], body[head].body_pos[1]);
@@ -59,23 +63,19 @@ void Snake::move()
 			switch (_getch()) {
 			case UP:	
 				dir_x = 0;
-				dir_y = 1;
-				time = 200;	// time is different because of different radio of char in x and y check if it is possible to make it equal
+				if(dir_y != -1) dir_y = 1;
 				break;
 			case DOWN:	
 				dir_x = 0;
-				dir_y = -1;
-				time = 200;
+				if(dir_y != 1) dir_y = -1;
 				break;
 			case LEFT:
-				dir_x = -1;
+				if(dir_x != 1) dir_x = -1;
 				dir_y = 0;
-				time = 100;
 				break;
 			case RIGHT:
-				dir_x = 1;
+				if(dir_x != -1) dir_x = 1;
 				dir_y = 0;
-				time = 100;
 				break;
 			}
 		}
@@ -100,7 +100,7 @@ void Snake::move()
 			for (int i = (tail - 1); i > 0; i--) 
 			{
 				GoTo(body[i].body_pos[0], body[i].body_pos[1]);
-				std::cout << "X";
+				std::cout << "X";	// tu rysuje X
 			}
 			GoTo(body[head].body_pos[0], body[head].body_pos[1]);
 			std::cout << "+";
@@ -128,12 +128,30 @@ bool Snake::snake_collision()
 
 void Snake::snakeEat() 
 {
+	// how to put fruit outside of snakes body, maybe its better to make Fruit::generate_rand()
+	// function in Game class (level higher, so i can use i that function everything)
+	// fruit generate rand niech funkcja moze robi losowanie z przedzialu bez powtorzen by na pewno nie byl owoc w ciele weza
+	// ktory moze byc zajebiscie dlugi po jakims czasie
+
 	if ((body[head].body_pos[0] == (fruit_x)) && (body[head].body_pos[1] == (fruit_y))) 
 	{	
 		pfruit_x = fruit_x;
 		pfruit_y = fruit_y;
 		score++;
 		Board::Score();
-		while (body[0].body_pos[0] == fruit_x && body[0].body_pos[1] == fruit_y) Fruit::generate_rand();		
+		bool access_granted = false;
+
+		// tu jest losowanie do skutku, przy malej szansie na trafieniu bedzie mogl dzialac w pyte dlugo, warto zrobic jakos by bylo
+		// losowanie bez powtorzen
+		while (!access_granted) {
+			for (int i = 0; i < tail; i++) {
+				if (!(body[i].body_pos[0] == fruit_x && body[i].body_pos[1] == fruit_y))  access_granted = true;
+				else {
+					access_granted = false;
+					Fruit::generate_rand();
+				}
+			}
+		}
 	}
 }
+
