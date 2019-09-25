@@ -44,7 +44,7 @@ void Snake::born() {
 	// make body of snake in addiction to his coordinate (without head)
 	for (int i = base_length -1; i > 0; i--) {
 		GoTo(body[i].body_pos[0], body[i].body_pos[1]);
-		std::cout << "+";
+		std::cout << "X";
 	}
 	// making head of the snake
 	GoTo(body[head].body_pos[0], body[head].body_pos[1]);
@@ -154,4 +154,6 @@ void Snake::snakeEat()
 		}
 	}
 }
+
+
 

@@ -52,10 +52,8 @@ bool Game::play() {
 		names[1] = "PLAY AGAIN?";
 		names[2] = "YES";
 		names[3] = "NO!";
-		int** wsk;
-		wsk = draw_center(names, 4);
-		int choose;
-		choose = navigate(4, wsk);
+
+		int choose = navigate(4, draw_center(names, 4));
 
 		switch (choose) {
 		case 2: {
@@ -391,7 +389,132 @@ void Game::demo() {
 //		g1.move();
 //		g1.snakeEat();
 //	}
+	system("cls");
 	
+	draw();	// board game
+	Fruit::generate_rand();
+	born();	// randomly generate snake
+	Score();
+
+	/// sprawdzic w necie czy mozna jakos debuggowac w okreslonych obraszach
+	/// jesli nie to moze sprobowac wysylac logi jakies do pliku np.
+	/// albo wyswietlac gdzies coordynaty
+
+	while (!((fruit_x == body[head].body_pos[0]) && (fruit_y == body[head].body_pos[1]))) 
+	{
+		if (fruit_x > body[head].body_pos[0]) 
+		{
+			if (dir_x != -1) 
+			{
+				dir_x = 1;
+				dir_y = 0;
+			}
+			else if (fruit_y > body[head].body_pos[1]) 
+			{
+				dir_y = -1;
+				dir_x = 0;
+			}
+			else if (fruit_y < body[head].body_pos[1]) 
+			{
+				dir_y = 1;
+				dir_x = 0;
+			}
+		}
+		else if (fruit_x < body[head].body_pos[0]) 
+		{
+			if (dir_x != 1) 
+			{
+				dir_x = -1;
+				dir_y = 0;
+			}
+			else if (fruit_y > body[head].body_pos[1]) 
+			{
+				dir_y = -1;
+				dir_x = 0;
+			}
+			else if (fruit_y < body[head].body_pos[1]) 
+			{
+				dir_y = 1;
+				dir_x = 0;
+			}
+ 		}
+		else if (fruit_y > body[head].body_pos[1]) 
+		{
+			if (dir_y != -1) 
+			{
+				dir_y = 1;
+				dir_x = 0;
+			}
+			else if (fruit_x > body[head].body_pos[0]) 
+			{
+				dir_x = 1;
+				dir_y = 0;
+			}
+			else if (fruit_x < body[head].body_pos[0]) 
+			{
+				dir_x = -1;
+				dir_y = 0;
+			}
+		}
+		else if (fruit_y < body[head].body_pos[1]) 
+		{
+			if (dir_y != 1) 
+			{
+				dir_y = -1;
+				dir_x = 0;
+			}
+			else if (fruit_x > body[head].body_pos[0]) 
+			{
+				dir_x = 1;
+				dir_y = 0;
+			}
+			else if (fruit_x < body[head].body_pos[0])
+			{
+				dir_x = -1;
+				dir_y = 0;
+			}
+		}
+
+
+		// saving previous position of tail (last element of snakes body)
+		prev_tailPos[0] = body[tail - 1].body_pos[0];
+		prev_tailPos[1] = body[tail - 1].body_pos[1];
+
+		// save position of every element of snakes body
+		for (int i = (tail - 1); i > 0; i--) {
+			body[i].body_pos[0] = body[i - 1].body_pos[0];
+			body[i].body_pos[1] = body[i - 1].body_pos[1];
+		}
+
+		// save position of snakes head
+		body[head].body_pos[0] += dir_x;	//head
+		body[head].body_pos[1] += dir_y;	//head
+
+		// start drawing snake (with erasing his last position of tail)
+
+		/// pojawiaja sie z dupy wartosci w ogonie i przez to pojawia sie
+		/// niespodziewany X
+		GoTo(prev_tailPos[0], prev_tailPos[1]);
+		std::cout << " ";
+		for (int i = (tail - 1); i > 0; i--)
+		{
+			GoTo(body[i].body_pos[0], body[i].body_pos[1]);
+			std::cout << "X";	// tu rysuje X
+		}
+		GoTo(body[head].body_pos[0], body[head].body_pos[1]);
+		std::cout << "+";
+
+		// growth of snake (in place of previous fruit)
+		if (prev_tailPos[0] == pfruit_x && prev_tailPos[1] == pfruit_y) {
+			tail = base_length + score;
+			body[tail - 1].body_pos[0] = pfruit_x;
+			body[tail - 1].body_pos[1] = pfruit_y;
+			pfruit_x = 0;
+			pfruit_y = 0;
+		}
+		Sleep(time);
+		snakeEat();
+	}
 }
 
 bool Game::start() {

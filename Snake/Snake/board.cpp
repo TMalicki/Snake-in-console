@@ -9,6 +9,7 @@ Board::Board(int x, int y)
 		global_y_min = 3;
 		global_x = x + global_x_min;
 		global_y = y + global_y_min;	
+		score = 0;
 	}
 	else {
 		std::cerr << "\nError, board is too small.\n";
@@ -21,7 +22,7 @@ Board::~Board()
 	std::cout << "Board zabite\n";
 }
 
-void Board::GoTo(short x, short y) {
+void Board::GoTo(int x, int y) {
 	COORD coord = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }

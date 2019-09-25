@@ -41,4 +41,7 @@ int main()
 		}
 		return 0;
 }
-
+// problem ktory napotykam jest zazwyczaj podczas gdy probuje sie zwolnic rzeczy ktore juz zwolnione zostaly
+// As Wesley said before, this can happens due resource or objects being released. 
+//I just would like to add that this problem can happens due the fact that you are trying 
+//to release a ressource that has being already released.

@@ -11,12 +11,6 @@ class
 	Snake : public Fruit {
 private:
 
-	struct Body {
-		int body_pos[2];	// position of every element of snakes body
-		Body* higherEl; // point element nearer head element
-	};
-	Body* body = new Body[length];  // array for body of snake
-
 	int head;
 	short dir_x;	//-1 (left or down) / +1 (right or up)
 	short dir_y;
@@ -25,7 +19,13 @@ private:
 	const int length = Board::global_x*Board::global_y;	// max length
 	int prev_tailPos[2];			// previous tail position (end of snake)
 	int tail;						// tail is sum of base_length and score				
-	int time = 100;					//	delay for snake
+	int time = 500;					//	delay for snake
+
+	struct Body {
+		int body_pos[2];	// position of every element of snakes body
+		Body* higherEl; // point element nearer head element
+	};
+	Body* body = new Body[length];  // array for body of snake
 
 public:
 	Snake(Board&);

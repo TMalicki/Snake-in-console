@@ -1,3 +1,2 @@
-﻿  fruit.cpp
-D:\Visual Studio Enterprise 2019\workspace\SNAKE\Snake\Snake\fruit.cpp(8): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+﻿  game.cpp
   Snake.vcxproj -> D:\Visual Studio Enterprise 2019\workspace\SNAKE\Snake\Debug\Snake.exe
